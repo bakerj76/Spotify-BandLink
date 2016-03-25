@@ -2,13 +2,21 @@ from artist import Artist
 from bandlink.artist_cache import ArtistCache
 
 import base64
+import logging
 import requests
 
 class Spotify:
     def __init__(self, client_id, secret):
         self.cache = ArtistCache(self)
+        self.__auth_headers = None
         self.__init_headers(client_id, secret)
-        self.__setup_auth_headers()
+
+    @property
+    def auth_headers(self):
+        if self.__auth_headers is None:
+            self.__setup_auth_headers()
+
+        return self.__auth_headers
 
     def __init_headers(self, client_id, secret):
         """Initialize the token POST headers/data to get the access token."""
@@ -31,7 +39,7 @@ class Spotify:
 
         response = request.json()
 
-        self.auth_headers = {
+        self.__auth_headers = {
             'Authorization': 'Bearer ' + response['access_token']
         }
 
@@ -39,7 +47,8 @@ class Spotify:
         if self.cache.id_in_cache(id):
             return self.get_band_by_id(id)
 
-        print 'Querying {0}...'.format(id)
+        logging.info('Querying {0}...'.format(id))
+
         request = requests.get(
             url='https://api.spotify.com/v1/artists/{id}'.format(id=id),
             headers=self.auth_headers

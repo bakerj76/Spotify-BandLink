@@ -98,6 +98,8 @@ def get_youtube_videos(youtube, tracks):
     print '\nPlaylist: {0}'.format(youtube.ids_to_playlist(ids))
 
 def main(args=None):
+    logging.basicConfig(filename='bandlink.log', level=logging.INFO)
+
     if args is None:
         args = sys.argv[1:]
 
