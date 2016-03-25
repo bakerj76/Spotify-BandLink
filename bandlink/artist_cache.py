@@ -1,5 +1,5 @@
 from json_artist import ArtistEncoder
-from artist import Artist
+from spotify.artist import Artist
 
 import cPickle as pickle
 import json

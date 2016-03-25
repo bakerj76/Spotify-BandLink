@@ -1,4 +1,5 @@
-from artist import Artist
+from bandlink.spotify.artist import Artist
+
 import json
 
 class ArtistEncoder(json.JSONEncoder):

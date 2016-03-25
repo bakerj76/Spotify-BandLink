@@ -1,5 +1,5 @@
-from . import Spotify
-from . import Youtube
+from spotify import Spotify
+from bandlink.youtube import Youtube
 
 import os
 import random

@@ -1,5 +1,5 @@
 from artist import Artist
-from artist_cache import ArtistCache
+from bandlink.artist_cache import ArtistCache
 
 import base64
 import requests
@@ -30,7 +30,6 @@ class Spotify:
         )
 
         response = request.json()
-        print response
 
         self.auth_headers = {
             'Authorization': 'Bearer ' + response['access_token']
