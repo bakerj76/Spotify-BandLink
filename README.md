@@ -23,6 +23,7 @@ Playlist: http://www.youtube.com/watch_videos?video_ids=AW-66e_wyxg,co6WMzDOh1o,
 
 ## TODO
 - [ ] Format code and more documentation
+- [ ] Spotify links
 - [ ] A* with genre as a heuristic
 - [ ] Use a database or something to save data
 - [ ] Cool UI?!
