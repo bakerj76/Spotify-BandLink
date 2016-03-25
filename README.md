@@ -10,7 +10,7 @@ bandlink [band1] [band2]
 
 ## Example
 ```
-bandlink "R.E.M." "Queen"
+> bandlink "R.E.M." "Queen"
 R.E.M. - Man On The Moon
 (https://www.youtube.com/watch?v=AW-66e_wyxg)
 U2 - Beautiful Day
