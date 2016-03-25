@@ -49,11 +49,11 @@ def bfs_both(artist1, artist2):
                 return found
 
         if len(q2) > 0:
-            found = bfs(q2, marked2, marked1)
+            found = bfs(q2, marked2, marked1, 1)
             if found is not None:
                 return found
 
-def bfs(queue, this_marked, other_marked):
+def bfs(queue, this_marked, other_marked, parent=0):
     node = queue.pop()
 
     logging.info(u'Visiting {0}...' \
@@ -62,7 +62,10 @@ def bfs(queue, this_marked, other_marked):
 
     for related_artist in node.get_related_artists():
         if related_artist.id not in this_marked:
-            related_artist.parent2 = node
+            if parent == 0:
+                related_artist.parent1 = node
+            else:
+                related_artist.parent2 = node
 
             if related_artist.id in other_marked:
                 logging.info("Found goal!")
@@ -85,6 +88,7 @@ def get_random_tracks(path):
 
 def get_youtube_videos(youtube, tracks):
     ids = []
+    links = []
 
     for track in tracks:
         video = youtube.search(track[0] + ' ' + track[1])
@@ -92,10 +96,14 @@ def get_youtube_videos(youtube, tracks):
             .encode(sys.stdout.encoding, errors='replace')
 
         if video is not None:
-            print '({0})'.format(youtube.id_to_link(video))
+            link = youtube.id_to_link(video)
+            links.append(link)
             ids.append(video)
 
+            print '({0})'.format(link)
+
     print '\nPlaylist: {0}'.format(youtube.ids_to_playlist(ids))
+    print 'Synchtube: {0}'.format(','.join(links))
 
 def main(args=None):
     logging.basicConfig(filename='bandlink.log', level=logging.INFO)
