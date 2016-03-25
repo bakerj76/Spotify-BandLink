@@ -1,6 +1,7 @@
 from spotify import Spotify
 from bandlink.youtube import Youtube
 
+import logging
 import os
 import random
 import sys
@@ -15,8 +16,9 @@ def find_link(spotify, artist1, artist2):
 
     goal = bfs_both(a1, a2)
 
+    # No link found.
     if goal is None:
-        return 'No link found'
+        return None
 
     path = []
 
@@ -42,38 +44,32 @@ def bfs_both(artist1, artist2):
 
     while len(q1) > 0 or len(q2) > 0:
         if len(q1) > 0:
-            node = q1.pop()
-            print u'Visiting {0}...' \
-                .format(node.name)\
-                .encode(sys.stdout.encoding, errors='replace')
-
-            for related_artist in node.get_related_artists():
-                if related_artist.id not in marked1:
-                    related_artist.parent1 = node
-
-                    if related_artist.id in marked2:
-                        print "Found goal!"
-                        return related_artist
-
-                    marked1.add(related_artist.id)
-                    q1.insert(0, related_artist)
+            found = bfs(q1, marked1, marked2)
+            if found is not None:
+                return found
 
         if len(q2) > 0:
-            node = q2.pop()
-            print u'Visiting {0}...' \
-                .format(node.name) \
-                .encode(sys.stdout.encoding, errors='replace')
+            found = bfs(q2, marked2, marked1)
+            if found is not None:
+                return found
 
-            for related_artist in node.get_related_artists():
-                if related_artist.id not in marked2:
-                    related_artist.parent2 = node
+def bfs(queue, this_marked, other_marked):
+    node = queue.pop()
 
-                    if related_artist.id in marked1:
-                        print "Found goal!"
-                        return related_artist
+    logging.info(u'Visiting {0}...' \
+        .format(node.name) \
+        .encode(sys.stdout.encoding, errors='replace'))
 
-                    marked2.add(related_artist.id)
-                    q2.insert(0, related_artist)
+    for related_artist in node.get_related_artists():
+        if related_artist.id not in this_marked:
+            related_artist.parent2 = node
+
+            if related_artist.id in other_marked:
+                logging.info("Found goal!")
+                return related_artist
+
+            this_marked.add(related_artist.id)
+            queue.insert(0, related_artist)
 
 def get_random_tracks(path):
     tracks = []
@@ -112,6 +108,10 @@ def main(args=None):
     spotify = Spotify(SPOTIFY_CLIENT_ID, SPOTIFY_SECRET)
     youtube = Youtube(YOUTUBE_KEY)
     path = find_link(spotify, args[0], args[1])
+
+    if path is None:
+        print "Link not found!"
+
     tracks = get_random_tracks(path)
     get_youtube_videos(youtube, tracks)
 

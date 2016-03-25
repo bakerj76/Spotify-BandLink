@@ -1,8 +1,8 @@
 from json_artist import ArtistEncoder
 from spotify.artist import Artist
 
-import cPickle as pickle
 import json
+import logging
 
 ID_FILE = 'id.json'
 ARTIST_FILE = 'artist.json'
@@ -35,7 +35,8 @@ class ArtistCache:
         self.__artist_table[artist.id] = artist
 
     def save(self):
-        print 'Saving results...'
+        logging.info('Saving results...')
+        
         with open(ID_FILE, 'wb') as f:
             json.dump(self.__artist_id, f)
 
